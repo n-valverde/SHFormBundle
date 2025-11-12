@@ -13,9 +13,13 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-
-        $rootNode = $treeBuilder->root('sh_form');
+        if (method_exists(TreeBuilder::class, 'getRootNode')) {
+            $treeBuilder = new TreeBuilder('sh_form');
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            $treeBuilder = new TreeBuilder();
+            $rootNode = $treeBuilder->root('sh_form');
+        }
 
         $this->addCaptcha($rootNode);
         $this->addRecaptcha($rootNode);
@@ -85,7 +89,7 @@ class Configuration implements ConfigurationInterface
                             ->prototype('scalar')->end()
                         ->end()
                         ->scalarNode('font_dir')
-                            ->defaultValue('%kernel.root_dir%/../web/bundles/genemuform/fonts')
+                            ->defaultValue('%kernel.project_dir%/web/bundles/genemuform/fonts')
                         ->end()
                         ->arrayNode('fonts')
                             ->defaultValue(
